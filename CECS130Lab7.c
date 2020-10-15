@@ -1,4 +1,3 @@
-/*
 Name: Cameron Simcoe
 CECS130: Lab 7
 Section: 1
@@ -13,7 +12,7 @@ Description: The code for a phone book using structures and dynamic memory, addi
 
 typedef struct
 {
-		char scFirstName[20];
+        char scFirstName[20];
         char scLastName[20];
         long long int lliPhoneNum;
 } stPhoneBook;
@@ -48,6 +47,34 @@ stPhoneBook* deletecontact(stPhoneBook* a, int size, char sDelLname[20])
         return temp;
 }//End of delete contact function
 
+stPhoneBook* deleteAllContacts(stPhoneBook* a)
+{
+        free(a);
+        int inumContacts = 0;
+        stPhoneBook * temp  = (stPhoneBook *)malloc(inumContacts * sizeof(stPhoneBook));
+        return temp;
+}
+
+stPhoneBook* alphabetize(stPhoneBook* a, int size)
+{
+        stPhoneBook temp;
+        int i = 0, j;
+        for (i = 0; i < size - 1; i++)
+        {
+                for (j=i+1; j<size; j++)
+                {
+                        if(strcmp(a[i].scFirstName, a[j].scFirstName) > 0)
+                        {
+                                temp = a[i];
+                                a[i] = a[j];
+                                a[j] = temp;
+                        }
+                }
+        }
+        return a;
+
+}
+
 //Code for exiting function
 void exiting()
 {
@@ -63,11 +90,12 @@ int main()
         stPhoneBook * aContacts  = (stPhoneBook *)malloc(inumContacts * sizeof(stPhoneBook));
         int x;
         srand(time(0));
+        int randNum;
 
         do
         {
                 //Code for phone menu
-                printf("Phone Menu:\n1. Add Contact\n2. Delete Contact\n3. Show Phone Book\n4. Alphabetize Phone Book by Last Name\n5. Search Phone Book\n6. Randomly Select Contact\n7. Delete All Contacts\n8. Exit Phone Menu");
+                printf("Phone Menu:\n1. Add Contact\n2. Delete Contact\n3. Show Phone Book\n4. Alphabetize Phone Book by First Name\n5. Search Phone Book\n6. Randomly Select Contact\n7. Delete All Contacts\n8. Exit Phone Menu");
                 printf("\nPlease choose an option: ");
                 scanf("%d",&iPhoneOp);
                 switch(iPhoneOp)
@@ -102,36 +130,42 @@ int main()
                                                         printf("Phone Number: %lli\n\n", obj.lliPhoneNum);
                                                 }
                                                 break;
-                                                case 4: 
-                                                	printf("Nothing here for now\n\n");
-                                                	break;
-                                                	case 5:
-                                                		printf("Enter last name of contact you'd like to search: ");
-                                                		scanf("%s",scSearchLName);
-                                                		for(x=0;x<inumContacts;x++){
-                                                			stPhoneBook obj = aContacts[x];
-                                                			if((strcmp(scSearchLName,obj.scLastName))==0){
-                                                				printf("\nContact Found");
-                                                				printf("\nName: %s %s\n",obj.scFirstName,obj.scLastName);
-                                                				printf("Phone Number: %lli\n\n",obj.lliPhoneNum);
-                                                				break;
-                                                			}
-                                                			else{
-                                                				printf("\nNo Contact Found\n");
-                                                			}
-                                                		}
-                                                		break;
-                                                		case 6:
-                                							printf("Nothing here for now\n\n");
-                                                			break;
-                                                			case 7:
-                                                				printf("Nothing here for now\n\n");
-                                                				break;
-																case 8:
-                                                        			exiting();
-                                                        			break;
-                                                        			default:
-                                                                		printf("\nInvalid choice. Please try again\n\n");
+                                                case 4:
+                                                        aContacts = alphabetize(aContacts, inumContacts);
+                                                        printf("To see new list, use show contacts option");
+                                                        break;
+                                                        case 5:
+                                                                printf("Enter last name of contact you'd like to search: ");
+                                                                scanf("%s",scSearchLName);
+                                                                for(x=0;x<inumContacts;x++){
+                                                                        stPhoneBook obj = aContacts[x];
+                                                                        if((strcmp(scSearchLName,obj.scLastName))==0){
+                                                                                printf("\nContact Found");
+                                                                                printf("\nName: %s %s\n",obj.scFirstName,obj.scLastName);
+                                                                                printf("Phone Number: %lli\n\n",obj.lliPhoneNum);
+                                                                                break;
+                                                                        }
+                                                                        else{
+                                                                                printf("\nNo Contact Found\n");
+                                                                        }
+                                                                }
+                                                                break;
+                                                                case 6:
+                                                                        randNum  = rand()%inumContacts;
+                                                                        stPhoneBook randContact = aContacts[randNum];
+                                                                        printf("\n Name: %s %s\n", randContact.scFirstName, randContact.scLastName);
+                                                                        printf("Phone Number: %lli\n\n", randContact.lliPhoneNum);
+                                                                        break;
+                                                                        case 7:
+                                                                                inumContacts = 0;
+                                                                                aContacts = deleteAllContacts(aContacts);
+                                                                                break;
+
+                                                                                case 8:
+                                                                                        exiting();
+                                                                                        break;
+                                                                                default:
+                                                                                printf("\nInvalid choice. Please try again\n\n");
 
                 }
 
